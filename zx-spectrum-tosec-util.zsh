@@ -19,7 +19,7 @@ for i in Games/*/; do
         folder_ext=$((count++ / 256))
         mkdir -p THESPECTRUM/$folder$folder_ext/$file
         for f in $i*.{tap,tzx,pzx,rom,szx,z80,sna,m3u}; do
-            cp $f THESPECTRUM/$folder$folder_ext/$file
+            mv $f THESPECTRUM/$folder$folder_ext/$file
         done
     fi
 done

@@ -19,7 +19,7 @@ Get-ChildItem -Directory -Path "Games" | ForEach-Object {
     $targetDir = "THESPECTRUM\$folder$folder_ext\$file"
     New-Item -ItemType Directory -Force -Path $targetDir | Out-Null
     Get-ChildItem -Path "$($_.FullName)\*" -Include *.tap, *.tzx, *.pzx, *.rom, *.szx, *.z80, *.sna, *.m3u | ForEach-Object {
-        Copy-Item -LiteralPath $_.FullName -Destination $targetDir
+        Move-Item -LiteralPath $_.FullName -Destination $targetDir
     }
 }
 $romsDir = "THESPECTRUM\roms"

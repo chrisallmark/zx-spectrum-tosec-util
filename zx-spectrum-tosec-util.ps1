@@ -1,11 +1,12 @@
 Set-StrictMode -Version Latest
-if (-not (Test-Path -PathType Container "Games")) {
+$src = "Games"
+if (-not (Test-Path -PathType Container $src)) {
     Write-Error "Games\ directory not found. Unzip the TOSEC archive here first."
     exit 1
 }
 $folder = ""
 $folder_ext = 0
-Get-ChildItem -Directory -Path "Games" | ForEach-Object {
+Get-ChildItem -Directory -Path $src | ForEach-Object {
     $file = $_.Name
     if ($file.StartsWith('!')) { return }
     $firstChar = $file.Substring(0, 1)
@@ -16,10 +17,16 @@ Get-ChildItem -Directory -Path "Games" | ForEach-Object {
     }
     $folder_ext = [math]::Floor($count / 256)
     $count++
-    $targetDir = "THESPECTRUM\$folder$folder_ext\$file"
-    New-Item -ItemType Directory -Force -Path $targetDir | Out-Null
+    Write-Host "Processing: $file"
+    $dest = "THESPECTRUM\$folder$folder_ext\$file"
+    New-Item -ItemType Directory -Force -Path $dest | Out-Null
     Get-ChildItem -Path "$($_.FullName)\*" -Include *.tap, *.tzx, *.pzx, *.rom, *.szx, *.z80, *.sna, *.m3u | ForEach-Object {
-        Move-Item -LiteralPath $_.FullName -Destination $targetDir
+        if (Test-Path -LiteralPath $_.FullName) {
+            Move-Item -LiteralPath $_.FullName -Destination $dest
+        }
+    }
+    if (-not (Get-ChildItem -Path $dest -Force)) {
+        Remove-Item -Path $dest
     }
 }
 $romsDir = "THESPECTRUM\roms"
